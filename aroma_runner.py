@@ -29,14 +29,16 @@ class Main( object ):
 	def _go( self ):
 		for file in self._files:
 			print 'running %s' % file
-			result = subprocess.call( [ 'coffee', file ], env = { 'NODE_PATH': '.:%s' % self._suiteDirectory }, close_fds = True )
+			environment = dict( os.environ )
+			environment[ 'NODE_PATH' ] = '.:%s' % self._suiteDirectory
+			result = subprocess.call( [ 'coffee', file ], env = environment, close_fds = True )
 			if result != 0:
 				raise Exception( "%s failed!" % file )
 		
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser( description = "I'm the Aroma runner, I run all the Aroma unit tests I can find.\n"\
 													"You can specify specific tests or let me search for them" )
-	parser.add_argument( 'suiteDirectory', help = 'directory where the Aroma test suite *.coffee files are located' )
+	parser.add_argument( 'suiteDirectory', help = '(e.g. suite/) directory where the Aroma test suite *.coffee files are located' )
 	parser.add_argument( '--root', default = '.', help = "root of tree to walk looking for tests, default = .", metavar = 'DIRECTORY' )
 	parser.add_argument( 'tests', nargs = '*', help = "test suites to run" )
 	arguments = parser.parse_args()
