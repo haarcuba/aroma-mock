@@ -1,6 +1,6 @@
 require 'globals'
 assert = require 'assert'
-example = require 'example'
+example = require 'example/example'
 
 fakeGlobal( '$', [ 'getJSON' ] )
 
