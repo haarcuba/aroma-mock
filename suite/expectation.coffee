@@ -19,6 +19,9 @@ class Expectation
 			return false
 		if args.length != @_argumentExpectations.length
 			return false
+		this._verifyArgumentExpectations( args )
+
+	_verifyArgumentExpectations: ( args ) =>
 		index = 0
 		for expectation in @_argumentExpectations
 			arg = args[ index ]
