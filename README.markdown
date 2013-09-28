@@ -12,16 +12,30 @@ Here's a trivial test suite, that doens't use any mocking:
 
 ```
 #!coffeescript
-class ExampleTest extends Suite
+class CalculatorTest extends Suite
 	test_Addition: =>
-		tested = new example.Example()
+		tested = new calculator.Calculator()
 		assert.equal 5, tested.add( 3, 2 )
 
-new ExampleTest.run() # don't forget this :)
+new CalculatorTest.run() # don't forget this :)
 ```
 
 ## Interesting Example
-Here's a more interesting example test, that mocks the jQuery $ symbol and tests that it is used as expected.
+Here's a more interesting example test, that mocks the jQuery $ symbol and tests that it is used as expected. 
+The `call` expectation: 
+
+	call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
+
+expresses our expectation that the tested code will call `$` with `"#input_element"` as its first argument. We also arrange that
+the return value of this call will be a Mock Object called `element`.
+We *then* expect that this `element` object's `val` method will be called with the expectation:
+
+	call( 'element.val', [ '123' ], null )
+
+Since we don't care about the return value from this call, we used `null`.
+	
+
+I hope this makes the following, complete listing, clear.
 
 
 ```
