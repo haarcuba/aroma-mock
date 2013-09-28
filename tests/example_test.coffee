@@ -16,7 +16,7 @@ class ExampleTest extends Suite
 	test_Calls_Jquery: =>
 		tested = new example.Example()
 		scenario = new Scenario()
-		scenario.expect( new Expectation( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArguement( 'doneCallback' ) ], null ) )
+		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArguement( 'doneCallback' ) ], null )
 
 		tested.getSomeJSON()
 		scenario.end()

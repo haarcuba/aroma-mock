@@ -1,6 +1,6 @@
 argumentexpectations = require 'argumentexpectations'
 
-class Expectation
+class Call
 	constructor: ( path, argumentExpectations, result ) ->
 		@_path = path
 		@_argumentExpectations = []
@@ -37,4 +37,4 @@ class Expectation
 		result += ")"
 		return result
 
-exports.Expectation = Expectation
+exports.Call = Call
