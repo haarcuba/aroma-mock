@@ -1,27 +1,28 @@
 scenario = require 'scenario'
 
-class Method
-	constructor: ( fakeObject, name ) ->
-		@fakeObject = fakeObject
-		@name = name
+class FakeObject
+	constructor: ( path, methods ) ->
+		@_path = path
+		@_methods = methods
 
 	callable:  =>
 		self = this
-		return (args...) ->
+		result = (args...) ->
 			return scenario.scenario().resultFor( self, args )
+		for method in @_methods
+			methodObject = new FakeObject( "#{@_path}.#{method}", [] )
+			result[ method ] = methodObject.callable()
+		result
 
 	path: =>
-		return "#{@fakeObject.path}.#{@name}"
+		@_path
 
 	string: =>
-		this.path()
+		@_path
 
-class FakeObject
-	constructor: ( path, methods ) ->
-		@path = path
-		for method in methods
-			self = this
-			methodObject = new Method( this, method )
-			this[ method ] = methodObject.callable()
+fakeObject = ( path, methods = null ) ->
+	if methods == null
+		methods = []
+	new FakeObject( path, methods ).callable()
 
-exports.FakeObject = FakeObject
+exports.fakeObject = fakeObject

@@ -1,7 +1,3 @@
-ls = ( object ) ->
-	for key, value of object
-		console.log( "#{key} => #{value}" )
-
 class Suite
 	run: =>
 		tests = 0
@@ -11,5 +7,4 @@ class Suite
 				this[ key ]()
 		console.log( "finished: #{tests} tests" )
 
-exports.ls = ls
 exports.Suite = Suite

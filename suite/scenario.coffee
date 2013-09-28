@@ -23,8 +23,10 @@ class Scenario
 	end: =>
 		Scenario._current = null
 		if @_expectations.length > 0
-			string = ( "#{e.string()}"+'\n' for e in @_expectations )
-			throw 'not all expectations were met, pending expectations:\n' + "#{string}"
+			console.log( 'pending expectations:' )
+			for e in @_expectations
+				console.log( "\t#{e.string()}" )
+			throw 'not all expectations were met'
 
 exports.Scenario = Scenario
 exports.scenario = -> Scenario.current()

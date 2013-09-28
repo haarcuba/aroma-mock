@@ -1,4 +1,5 @@
 argumentexpectations = require 'argumentexpectations'
+common = require 'common'
 
 class Call
 	constructor: ( path, argumentExpectations, result ) ->
@@ -31,10 +32,7 @@ class Call
 		return true
 
 	string: =>
-		result = "#{@_path}("
-		for expectation in @_argumentExpectations
-			result += expectation.string() + ", "
-		result += ")"
-		return result
+		expectationStrings = (e.string() for e in @_argumentExpectations)
+		result = "#{@_path}(#{common.join( expectationStrings, ',' )})"
 
 exports.Call = Call
