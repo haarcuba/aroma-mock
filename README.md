@@ -1,4 +1,0 @@
-aroma
-=====
-
-CoffeeScript unit testing
