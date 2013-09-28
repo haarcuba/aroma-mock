@@ -21,7 +21,8 @@ class ExampleTest extends Suite
 		tested.getSomeJSON()
 		scenario.end()
 
-		SaveArguement.saved( 'doneCallback' )()
+		capturedCallback = SaveArguement.saved( 'doneCallback' )
+		capturedCallback()
 
 	test_UseJQueryOnDOM: =>
 		tested = new example.Example()
