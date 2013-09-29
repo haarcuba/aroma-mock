@@ -10,8 +10,7 @@ Original concepts were carried over from Voodoo-Mock, a C++/Python unit test fra
 Here's a trivial test suite, that doens't use any mocking:
 
 
-```
-#!coffeescript
+```coffeescript
 class CalculatorTest extends Suite
 	test_Addition: =>
 		tested = new calculator.Calculator()
@@ -38,8 +37,7 @@ Since we don't care about the return value from this call, we used `null`.
 I hope this makes the following, complete listing, clear.
 
 
-```
-#!coffeescript
+```coffeescript
 require 'globals' # import the Aroma test suite
 assert = require 'assert'
 example = require 'example/example' # import the tested unit
@@ -82,8 +80,7 @@ new ExampleTest.run() # don't forget this :)
 ```
 
 here's the code that passes this test:
-```
-#!coffeescript
+```coffeescript
 class Example
 	useJQueryOnDOM: ( text ) =>
 		$("#input_element").val( text )
