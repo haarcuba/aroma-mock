@@ -90,6 +90,9 @@ class Example
 
 	_mycallback: =>
 		console.log( 'my callback called!' )
+
+exports.Example = Example
 ```
 
+## Prerequisites
 Aroma relies on CoffeeScript and Node.js to be installed on your system.
