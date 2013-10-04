@@ -18,3 +18,4 @@ global.fakeGlobal = ( name, methods ) ->
 
 global.call = ( path, argumentexpectations, result ) -> new expectation.Call( path, argumentexpectations, result )
 global.common = common
+global.window = global

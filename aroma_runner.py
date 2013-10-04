@@ -33,7 +33,8 @@ class Main( object ):
 			environment[ 'NODE_PATH' ] = '.:%s' % self._suiteDirectory
 			result = subprocess.call( [ 'coffee', file ], env = environment, close_fds = True )
 			if result != 0:
-				raise Exception( "%s failed!" % file )
+				print "%s failed!\n" % file
+				quit( 1 )
 		
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser( description = "I'm the Aroma runner, I run all the Aroma unit tests I can find.\n"\

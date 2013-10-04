@@ -10,9 +10,7 @@ join = ( array, separator ) ->
 	result += array[ array.length - 1 ]
 	result
 
-ls = ( thing ) ->
-	for key, value of thing
-		console.log( "#{key} => #{value}" )
+ls = ( thing ) -> console.log( thing.valueOf() )
 
 exports.join = join
 exports.ls = ls
