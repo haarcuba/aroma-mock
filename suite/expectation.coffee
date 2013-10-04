@@ -6,6 +6,8 @@ class Call
 		@_path = path
 		@_argumentExpectations = []
 		for expectation in argumentExpectations
+			if expectation == null
+				expectation = new argumentexpectations.Equals( null )
 			if expectation[ '__argumentExpection' ]?
 				@_argumentExpectations.push( expectation )
 			else

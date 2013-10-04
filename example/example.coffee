@@ -13,5 +13,8 @@ class Example
 
 	_mycallback: =>
 		console.log( 'my callback called!' )
+	
+	callJQueryWithNull: =>
+		$( null )
 
 exports.Example = Example

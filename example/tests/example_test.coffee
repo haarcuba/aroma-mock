@@ -39,5 +39,12 @@ class ExampleTest extends Suite
 		tested.useJQueryOnDOM( '456' )
 		scenario.end()
 
+	test_ExpectArguemntToBeNull: =>
+		tested = new example.Example()
+		scenario = new Scenario()
+		scenario.expect call( '$', [ null ], null )
+		tested.callJQueryWithNull()
+		scenario.end()
+
 test = new ExampleTest()
 test.run()
