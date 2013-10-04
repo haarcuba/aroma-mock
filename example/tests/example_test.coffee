@@ -1,5 +1,4 @@
 require 'globals'
-assert = require 'assert'
 example = require 'example/example'
 
 fakeGlobal( '$', [ 'getJSON' ] )
@@ -7,11 +6,11 @@ fakeGlobal( '$', [ 'getJSON' ] )
 class ExampleTest extends Suite
 	test_Addition: =>
 		tested = new example.Example()
-		assert.equal 5, tested.add( 3, 2 )
+		assertions.equal 5, tested.add( 3, 2 )
 
 	test_Multiplication: =>
 		tested = new example.Example()
-		assert.equal 6, tested.mul( 3, 2 )
+		assertions.equal 6, tested.mul( 3, 2 )
 
 	test_GetJSONWithJQuery: =>
 		tested = new example.Example()
