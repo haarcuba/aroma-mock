@@ -34,7 +34,7 @@ class ExampleTest extends Suite
 	test_JQuerySelectorExpectation: =>
 		tested = new example.Example()
 		scenario = new Scenario()
-		expectJQuery scenario, '#input_element', 'val', [ '456' ], null
+		scenario.expect_$( '#input_element', 'val', [ '456' ], null )
 		tested.useJQueryOnDOM( '456' )
 		scenario.end()
 

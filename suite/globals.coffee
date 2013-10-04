@@ -18,7 +18,3 @@ global.fakeGlobal = ( name, methods ) ->
 
 global.call = ( path, argumentexpectations, result ) -> new expectation.Call( path, argumentexpectations, result )
 global.common = common
-
-global.expectJQuery = ( scenario, selector, method, argumentExpectations, result ) ->
-	scenario.expect call( '$', [ selector ], fakeObject( 'selected', [ method ] ) )
-	scenario.expect call( "selected.#{method}", argumentExpectations, result )

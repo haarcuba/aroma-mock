@@ -20,6 +20,11 @@ class Scenario
 	expect: ( call ) =>
 		@_expectations.push( call )
 
+	expect_$: ( selector, method, argumentExpectations, result ) =>
+		idForMiddleMan = Math.random().toString()[ 2.. ]
+		this.expect call( '$', [ selector ], fakeObject( idForMiddleMan, [ method ] ) )
+		this.expect call( "#{idForMiddleMan}.#{method}", argumentExpectations, result )
+
 	end: =>
 		Scenario._current = null
 		if @_expectations.length > 0
