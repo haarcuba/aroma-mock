@@ -14,7 +14,7 @@ Here's a trivial test suite, that doens't use any mocking:
 class CalculatorTest extends Suite
 	test_Addition: =>
 		tested = new calculator.Calculator()
-		assert.equal 5, tested.add( 3, 2 )
+		assertions.equal 5, tested.add( 3, 2 )
 
 new CalculatorTest.run() # don't forget this :)
 ```
@@ -32,6 +32,8 @@ We *then* expect that this `element` object's `val` method will be called with t
 	call( 'element.val', [ '123' ], null )
 
 Since we don't care about the return value from this call, we used `null`.
+
+Since JQuery expectations are commonplace, we can use a the shorthand `expect_$` for this 2-call expectation - this is demonstrated below.
 	
 
 I hope this makes the following, complete listing, clear.
@@ -39,7 +41,6 @@ I hope this makes the following, complete listing, clear.
 
 ```coffeescript
 require 'globals' # import the Aroma test suite
-assert = require 'assert'
 example = require 'example/example' # import the tested unit
 
 fakeGlobal( '$', [ 'getJSON' ] ) # make a mock $ accessible in the tested unit 
