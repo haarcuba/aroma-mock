@@ -45,5 +45,16 @@ class ExampleTest extends Suite
 		tested.callJQueryWithNull()
 		scenario.end()
 
+	test_ExpectCallbackToUse_$_With_this: =>
+		tested = new example.Example()
+		scenario = new Scenario()
+		scenario.expect_$( '#product', 'on', [ 'change', new SaveArgument( "productChangeCallback" ) ], null )
+		scenario.expect_$( THIS, 'val', [], 123 )
+		tested.registerCallbackForProductChange()
+		callback = SaveArgument.saved( "productChangeCallback" )
+		callback.apply( THIS )
+		assertions.equal( 123, tested.lastProductChanged() )
+		scenario.end()
+		
 test = new ExampleTest()
 test.run()

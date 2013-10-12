@@ -17,4 +17,12 @@ class Example
 	callJQueryWithNull: =>
 		$( null )
 
+	registerCallbackForProductChange: =>
+		self = this
+		$("#product").on 'change', ->
+			self._lastProductChanged = $(this).val()
+
+	lastProductChanged: =>
+		this._lastProductChanged
+
 exports.Example = Example
