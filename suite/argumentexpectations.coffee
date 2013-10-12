@@ -28,21 +28,21 @@ class Equals extends ArgumentExpectation
 		result += '}'
 		result
 			
-class SaveArguement extends ArgumentExpectation
+class SaveArgument extends ArgumentExpectation
 	@_saved = {}
 	constructor: ( saveName ) ->
 		@_saveName = saveName
 		super()
 
 	ok: ( value ) =>
-		SaveArguement._saved[ @_saveName ] = value
+		SaveArgument._saved[ @_saveName ] = value
 		return true
 
 	string: =>
 		"<SAVE:#{@_saveName}>"
 
 	@saved: ( name ) =>
-		SaveArguement._saved[ name ]
+		SaveArgument._saved[ name ]
 
 exports.Equals = Equals
-exports.SaveArguement = SaveArguement
+exports.SaveArgument = SaveArgument

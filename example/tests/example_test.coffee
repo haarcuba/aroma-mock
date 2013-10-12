@@ -15,12 +15,12 @@ class ExampleTest extends Suite
 	test_GetJSONWithJQuery: =>
 		tested = new example.Example()
 		scenario = new Scenario()
-		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArguement( 'doneCallback' ) ], null )
+		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArgument( 'doneCallback' ) ], null )
 
 		tested.getSomeJSON()
 		scenario.end()
 
-		capturedCallback = SaveArguement.saved( 'doneCallback' )
+		capturedCallback = SaveArgument.saved( 'doneCallback' )
 		capturedCallback()
 
 	test_UseJQueryOnDOM: =>
