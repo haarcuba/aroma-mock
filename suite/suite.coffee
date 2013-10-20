@@ -4,6 +4,7 @@ class Suite
 		for key, value of this
 			if key.match /^test_/
 				tests += 1
+				console.log( key )
 				this[ key ]()
 		console.log( "finished: #{tests} tests" )
 

@@ -17,7 +17,7 @@ class FakeObject
 	path: =>
 		@_path
 
-	string: =>
+	toString: =>
 		@_path
 
 fakeObject = ( path, methods = null ) ->

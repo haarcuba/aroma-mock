@@ -12,6 +12,7 @@ global.Scenario = scenario.Scenario
 global.Call = expectation.Call
 global.Equals = argumentexpectations.Equals
 global.SaveArgument = argumentexpectations.SaveArgument
+global.IgnoreArgument = argumentexpectations.IgnoreArgument
 global.fakeObject = fakeobject.fakeObject
 global.fakeGlobal = ( name, methods ) ->
 	global[ name ] = fakeobject.fakeObject( name, methods )

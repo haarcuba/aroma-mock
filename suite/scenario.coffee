@@ -11,10 +11,10 @@ class Scenario
 
 	resultFor: ( method, args ) =>
 		if @_expectations.length == 0
-			throw "unexpected call #{method.string()}(#{args}), expected nothing"
+			throw "unexpected call #{method}(#{args}), expected nothing"
 		expectation = @_expectations.shift()
 		if not expectation.ok( method, args )
-			throw "unexpected call #{method.string()}(#{args}) expected #{expectation.string()}"
+			throw "unexpected call #{method}(#{args}) expected #{expectation}"
 		return expectation.result()
 
 	expect: ( call ) =>
@@ -30,7 +30,7 @@ class Scenario
 		if @_expectations.length > 0
 			console.log( 'pending expectations:' )
 			for e in @_expectations
-				console.log( "\t#{e.string()}" )
+				console.log( "\t#{e}" )
 			throw 'not all expectations were met'
 
 exports.Scenario = Scenario

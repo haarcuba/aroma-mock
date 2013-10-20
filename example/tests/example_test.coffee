@@ -2,6 +2,7 @@ require 'globals'
 example = require 'example/example'
 
 fakeGlobal( '$', [ 'getJSON' ] )
+fakeGlobal( 'Point', [] )
 
 class ExampleTest extends Suite
 	test_Addition: =>
@@ -54,6 +55,14 @@ class ExampleTest extends Suite
 		callback = SaveArgument.saved( "productChangeCallback" )
 		callback.apply( THIS )
 		assertions.equal( 123, tested.lastProductChanged() )
+		scenario.end()
+
+	test_FakeClass: =>
+		tested = new example.Example()
+		scenario = new Scenario()
+		scenario.expect call( 'Point', [ 5, 4 ], fakeObject( 'aPoint', [ 'show' ] ) )
+		scenario.expect call( 'aPoint.show', [], null )
+		tested.instantiatePoint()
 		scenario.end()
 		
 test = new ExampleTest()

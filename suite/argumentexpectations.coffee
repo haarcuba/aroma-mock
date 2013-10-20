@@ -15,7 +15,7 @@ class Equals extends ArgumentExpectation
 	ok: ( value ) =>
 		Object.equal( @_expected, value )
 
-	string: =>
+	toString: =>
 		result = "#{@_expected}"
 		if result == "[object Object]"
 			result = this._listObject( @_expected )
@@ -38,11 +38,19 @@ class SaveArgument extends ArgumentExpectation
 		SaveArgument._saved[ @_saveName ] = value
 		return true
 
-	string: =>
+	toString: =>
 		"<SAVE:#{@_saveName}>"
 
 	@saved: ( name ) =>
 		SaveArgument._saved[ name ]
 
+class IgnoreArgument extends ArgumentExpectation
+	ok: ( value ) =>
+		true
+
+	toString: =>
+		"|IGNORE|"
+
 exports.Equals = Equals
 exports.SaveArgument = SaveArgument
+exports.IgnoreArgument = IgnoreArgument

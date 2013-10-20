@@ -25,4 +25,8 @@ class Example
 	lastProductChanged: =>
 		this._lastProductChanged
 
+	instantiatePoint: =>
+		point = new Point( 5, 4 )
+		point.show()
+
 exports.Example = Example
