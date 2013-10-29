@@ -1,8 +1,8 @@
 assertionError = ( message ) ->
 	throw "AssertionError: #{message}"
 
-equal = ( a, b ) ->
-	if not Object.equal( a, b )
-		assertionError( "#{a} != #{b}" )
+equal = ( expected, actual ) ->
+	if not Object.equal( expected, actual )
+		assertionError( "#{expected} (expected) != #{actual} (actual)" )
 
 exports.equal = equal
