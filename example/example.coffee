@@ -29,4 +29,9 @@ class Example
 		point = new Point( 5, 4 )
 		point.show()
 
+	schedulerExample: ( id, scheduler ) =>
+		event = scheduler.getEvent( id )
+		scheduler.setEventID( id, 456 )
+		scheduler.updateEvent( event.id )
+
 exports.Example = Example

@@ -57,6 +57,18 @@ class ExampleTest extends Suite
 		assertions.equal( 123, tested.lastProductChanged() )
 		scenario.end()
 
+	test_Hooks: =>
+		tested = new example.Example()
+		scenario = new Scenario()
+		event = { id: 123, text: 'hi there' }
+		fakeScheduler = fakeObject( 'scheduler', [ 'getEvent', 'setEventID', 'updateEvent' ] )
+		scenario.expect call( 'scheduler.getEvent', [ 123 ], event )
+		scenario.expect call( 'scheduler.setEventID', [ 123, 456 ], event )
+		scenario.hook( -> event.id = 456 )
+		scenario.expect call( 'scheduler.updateEvent', [ 456 ], null )
+		tested.schedulerExample( 123, fakeScheduler )
+		scenario.end()
+
 	test_FakeClass: =>
 		tested = new example.Example()
 		scenario = new Scenario()

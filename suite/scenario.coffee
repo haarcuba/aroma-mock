@@ -15,10 +15,18 @@ class Scenario
 		expectation = @_expectations.shift()
 		if not expectation.ok( method, args )
 			throw "unexpected call #{method}(#{args}) expected #{expectation}"
-		return expectation.result()
+		result = expectation.result()
+		while  @_expectations.length > 0 and @_expectations[ 0 ].__hook?
+			hook = @_expectations.shift()
+			hook.execute()
+		return result
 
 	expect: ( call ) =>
 		@_expectations.push( call )
+
+	hook: ( call ) =>
+		wrapper = { execute: call, __hook: true }
+		@_expectations.push( wrapper )
 
 	expect_$: ( selector, method, argumentExpectations, result ) =>
 		idForMiddleMan = "#{Math.random().toString()[ 2..4 ]}_$(#{selector})"
