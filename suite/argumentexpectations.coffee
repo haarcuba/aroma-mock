@@ -51,6 +51,7 @@ class IgnoreArgument extends ArgumentExpectation
 	toString: =>
 		"|IGNORE|"
 
+exports.ArgumentExpectation = ArgumentExpectation
 exports.Equals = Equals
 exports.SaveArgument = SaveArgument
 exports.IgnoreArgument = IgnoreArgument
