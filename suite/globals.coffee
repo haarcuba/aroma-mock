@@ -4,6 +4,7 @@ fakeobject = require 'fakeobject'
 scenario = require 'scenario'
 suite = require 'suite'
 common = require 'common'
+asynchronousajaxtesting = require 'asynchronousajaxtesting'
 global.assertions = require 'assertions'
 
 global.Suite = suite.Suite
@@ -23,3 +24,5 @@ global.common = common
 global.window = global
 global.THIS = { fakeThisObject: "#{Math.random().toString()[ 2..5 ]}_this",\
 				toString: => "this" }
+
+global.asyncAjaxScenario = asynchronousajaxtesting.asyncAjaxScenario
