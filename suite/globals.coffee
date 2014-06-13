@@ -25,4 +25,7 @@ global.window = global
 global.THIS = { fakeThisObject: "#{Math.random().toString()[ 2..5 ]}_this",\
 				toString: => "this" }
 
+global.clone = ( obj ) ->
+	JSON.parse( JSON.stringify( obj ) )
+
 global.asyncAjaxScenario = asynchronousajaxtesting.asyncAjaxScenario
