@@ -4,7 +4,7 @@ fakeobject = require 'fakeobject'
 scenario = require 'scenario'
 suite = require 'suite'
 common = require 'common'
-asynchronousajaxtesting = require 'asynchronousajaxtesting'
+ajaxtest = require 'ajaxtest'
 global.assertions = require 'assertions'
 
 global.Suite = suite.Suite
@@ -28,4 +28,4 @@ global.THIS = { fakeThisObject: "#{Math.random().toString()[ 2..5 ]}_this",\
 global.clone = ( obj ) ->
 	JSON.parse( JSON.stringify( obj ) )
 
-global.asyncAjaxScenario = asynchronousajaxtesting.asyncAjaxScenario
+global.AjaxTest = ajaxtest.AjaxTest
