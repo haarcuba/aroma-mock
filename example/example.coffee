@@ -34,4 +34,10 @@ class Example
 		scheduler.setEventID( id, 456 )
 		scheduler.updateEvent( event.id )
 
+	doAsyncAjax: ( data ) =>
+		success = (data) =>
+			$("#status").val( data.status )
+			$("#output_element").val( data.answer )
+		$.ajax { url: '/path/to/return_keys.json', data: data, type: 'POST', success: success }
+
 exports.Example = Example

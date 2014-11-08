@@ -7,7 +7,7 @@ The scenario verifies the exact expected function call sequence including the fu
 Original concepts were carried over from Voodoo-Mock, a C++/Python unit test framework.
 
 ## Trivial Example
-Here's a trivial test suite, that doens't use any mocking:
+Here's a trivial test suite, that does't use any mocking:
 
 
 ```coffeescript
@@ -93,6 +93,49 @@ class Example
 		console.log( 'my callback called!' )
 
 exports.Example = Example
+```
+
+## Asynchronous Ajax JSON Retrieval Example
+The `AjaxTest` class allows testing for an asynchronous ajax call. We define
+the parameters of the ajax call, the data supposedly returned from the server,
+and what we expect should happen on success.
+
+Currently, it is assumed that the call is successful - an option for failure
+will be added in the future when I need it :)
+
+Here's an asynchronous ajax test:
+
+```coffeescript
+
+# we don't use getJSON in this example, but this is how to create a fake object
+# with multiple methods.
+fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
+
+class ExampleTest extends Suite
+	test_Asynchronous_AJAX: =>
+		tested = new example.Example()
+		scenario = new Scenario()
+		ajaxTest = new AjaxTest( scenario )
+		ajaxTest.expect( { url: '/path/to/return_keys.json', data: { a: 1, b: 2 }, type: 'POST' } )
+		ajaxTest.returnFromServer( { status: 'ok', answer: 'yes' } )
+		ajaxTest.onSuccess = =>
+			scenario.expect_$( "#status", 'val', [ 'ok' ], null )
+			scenario.expect_$( "#output_element", 'val', [ 'yes' ], null )
+
+		tested.doAsyncAjax( { a: 1, b: 2 } )
+		ajaxTest.verify()
+		scenario.end()
+```
+
+this is the code that passes it
+
+```coffeescript
+class Example
+	doAsyncAjax: ( data ) =>
+		success = (data) =>
+			$("#status").val( data.status )
+			$("#output_element").val( data.answer )
+		$.ajax { url: '/path/to/return_keys.json', data: data, type: 'POST', success: success }
 ```
 
 ## Prerequisites
