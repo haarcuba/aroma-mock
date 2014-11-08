@@ -1,7 +1,7 @@
 require 'globals'
 example = require 'example/example'
 
-fakeGlobal( '$', [ 'getJSON' ] )
+fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
 fakeGlobal( 'Point', [] )
 
 class ExampleTest extends Suite
@@ -76,6 +76,20 @@ class ExampleTest extends Suite
 		scenario.expect call( 'aPoint.show', [], null )
 		tested.instantiatePoint()
 		scenario.end()
-		
+
+	test_Asynchrounous_AJAX: =>
+		tested = new example.Example()
+		scenario = new Scenario()
+		ajaxTest = new AjaxTest( scenario )
+		ajaxTest.expect( { url: '/path/to/return_keys.json', data: { a: 1, b: 2 }, type: 'POST' } )
+		ajaxTest.returnFromServer( { status: 'ok', answer: 'yes' } )
+		ajaxTest.onSuccess = =>
+			scenario.expect_$( "#status", 'val', [ 'ok' ], null )
+			scenario.expect_$( "#output_element", 'val', [ 'yes' ], null )
+
+		tested.doAsyncAjax( { a: 1, b: 2 } )
+		ajaxTest.verify()
+		scenario.end()
+
 test = new ExampleTest()
 test.run()
