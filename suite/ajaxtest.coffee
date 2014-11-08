@@ -1,7 +1,6 @@
 class AjaxTest
 	constructor: ( scenario ) ->
-		@_scenario = scenario
-		@_scenario.expect call( '$.ajax', [ new SaveArgument( 'actualAjaxArgs' ) ], null )
+		scenario.expect call( '$.ajax', [ new SaveArgument( 'actualAjaxArgs' ) ], null )
 
 	successExpectations: ( successExpectations ) =>
 
