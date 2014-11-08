@@ -117,10 +117,10 @@ class ExampleTest extends Suite
 		scenario = new Scenario()
 		ajaxTest = new AjaxTest( scenario )
 		ajaxTest.expect( { url: '/path/to/return_keys.json', data: { a: 1, b: 2 }, type: 'POST' } )
-		ajaxTest.returnFromServer( { status: 'ok', answer: 'yes' } )
+		ajaxTest.returnFromServer( { status: 'ok', answer: [ 'a', 'b' ] } )
 		ajaxTest.onSuccess = =>
 			scenario.expect_$( "#status", 'val', [ 'ok' ], null )
-			scenario.expect_$( "#output_element", 'val', [ 'yes' ], null )
+			scenario.expect_$( "#output_element", 'val', [ [ 'a', 'b' ] ], null )
 
 		tested.doAsyncAjax( { a: 1, b: 2 } )
 		ajaxTest.verify()
