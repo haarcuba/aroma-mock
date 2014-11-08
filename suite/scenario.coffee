@@ -5,11 +5,14 @@ class Scenario
 			throw "No Scenario!"
 		@_current
 
-	constructor: ->
+	constructor: ( verbose = false ) ->
+		@_verbose = verbose
 		@_expectations = []
 		Scenario._current = this
 
 	resultFor: ( method, args ) =>
+		if @_verbose
+			console.log "scenario call #{method}(#{args})"
 		if @_expectations.length == 0
 			throw "unexpected call #{method}(#{args}), expected nothing"
 		expectation = @_expectations.shift()
