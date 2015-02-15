@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Aroma by haarcuba</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/haarcuba/aroma">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Aroma</h1>
+            <h2>CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/haarcuba/aroma/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/haarcuba/aroma/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>
+<a id="aroma---mocking-framework-for-coffee-script" class="anchor" href="#aroma---mocking-framework-for-coffee-script" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aroma - Mocking Framework for Coffee Script</h1>
+
+<p>Aroma is a Coffee Script Mock Framework. It provides a useful scenario-expectations construct and easy, on the fly mock object generation.</p>
+
+<p>The scenario verifies the exact expected function call sequence including the function arguments. Scenarios are specified before the code is run, making the tests well organized, readable and more explicit. </p>
+
+<p>The scenario abstraction verifies that things happen <em>exactly</em> as specified: i.e. we do not only verify that some mock function was called with specific paramenter, we verify that it has <em>not</em> been called more times that it should have been, with some other parameters.</p>
+
+<p>Original concepts were carried over from Voodoo-Mock, a C++/Python unit test framework.</p>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<p>Here's an example test, that mocks the jQuery $ symbol and tests that it is used as expected. 
+The <code>call</code> expectation: </p>
+
+<pre><code>call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
+</code></pre>
+
+<p>expresses our expectation that the tested code will call <code>$</code> with <code>"#input_element"</code> as its first argument. We also arrange that
+the return value of this call will be a Mock Object called <code>element</code>.
+We <em>then</em> expect that this <code>element</code> object's <code>val</code> method will be called with the expectation:</p>
+
+<pre><code>call( 'element.val', [ '123' ], null )
+</code></pre>
+
+<p>Since we don't care about the return value from this call, we used <code>null</code>.</p>
+
+<p>Since JQuery expectations are commonplace, we can use a the shorthand <code>expect_$</code> for this 2-call expectation - this is demonstrated below.</p>
+
+<p>I hope this makes the following, complete listing, clear.</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="pl-s3">require</span> <span class="pl-s1"><span class="pl-pds">'</span>globals<span class="pl-pds">'</span></span> <span class="pl-c"># import the Aroma test suite</span>
+<span class="pl-v"><span class="pl-v">example <span class="pl-k">=</span></span></span> <span class="pl-s3">require</span> <span class="pl-s1"><span class="pl-pds">'</span>../example<span class="pl-pds">'</span></span>
+
+fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
+fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>Point<span class="pl-pds">'</span></span>, [] )
+
+describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma mocking framework<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+    it <span class="pl-s1"><span class="pl-pds">'</span>should get JSON with jQuery<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+        <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
+        <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
+        scenario.expect call( <span class="pl-s1"><span class="pl-pds">'</span>$.getJSON<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>www.google.com<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">a:</span></span><span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span><span class="pl-c1">2</span>}, <span class="pl-k">new</span> <span class="pl-en">SaveArgument</span>( <span class="pl-s1"><span class="pl-pds">'</span>doneCallback<span class="pl-pds">'</span></span> ) ], <span class="pl-c1">null</span> )
+
+        tested.getSomeJSON()
+        scenario.end()
+
+        <span class="pl-v"><span class="pl-v">capturedCallback <span class="pl-k">=</span></span></span> SaveArgument.saved( <span class="pl-s1"><span class="pl-pds">'</span>doneCallback<span class="pl-pds">'</span></span> )
+        capturedCallback()
+
+    it <span class="pl-s1"><span class="pl-pds">'</span>should use jQuery on the DOM<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+        <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
+        <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
+        scenario.expect call( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">"</span>#input_element<span class="pl-pds">"</span></span> ], fakeObject( <span class="pl-s1"><span class="pl-pds">'</span>element<span class="pl-pds">'</span></span>, [<span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>] ) )
+        scenario.expect call( <span class="pl-s1"><span class="pl-pds">'</span>element.val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+        tested.useJQueryOnDOM( <span class="pl-s1"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> )
+        scenario.end()
+
+    it <span class="pl-s1"><span class="pl-pds">'</span>should use jQuery on the DOM: example of expect_$ shorthand notation<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+        <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
+        <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
+        scenario.expect_$( <span class="pl-s1"><span class="pl-pds">'</span>#input_element<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>456<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+        tested.useJQueryOnDOM( <span class="pl-s1"><span class="pl-pds">'</span>456<span class="pl-pds">'</span></span> )
+        scenario.end()</pre></div>
+
+<p>here's the code that passes this test:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="pl-st">class</span> <span class="pl-en">Example</span>
+    <span class="pl-en">useJQueryOnDOM</span><span class="pl-k">:</span><span class="pl-vpf"> <span class="pl-vpf">( text )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        $(<span class="pl-s1"><span class="pl-pds">"</span>#input_element<span class="pl-pds">"</span></span>).val( text )
+
+    <span class="pl-en">getSomeJSON</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        $.getJSON <span class="pl-s1"><span class="pl-pds">'</span>www.google.com<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">a:</span></span><span class="pl-c1">1</span>,<span class="pl-v"><span class="pl-v">b:</span></span><span class="pl-c1">2</span>}, <span class="pl-v">this</span>._mycallback
+
+    <span class="pl-en">_mycallback</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        <span class="pl-en">console</span>.<span class="pl-s3">log</span>( <span class="pl-s1"><span class="pl-pds">'</span>my callback called!<span class="pl-pds">'</span></span> )
+
+<span class="pl-v"><span class="pl-v">exports.Example <span class="pl-k">=</span></span></span> Example</pre></div>
+
+<h2>
+<a id="asynchronous-ajax-json-retrieval-example" class="anchor" href="#asynchronous-ajax-json-retrieval-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Asynchronous Ajax JSON Retrieval Example</h2>
+
+<p>The <code>AjaxTest</code> class allows testing for an asynchronous ajax call. We define
+the parameters of the ajax call, the data supposedly returned from the server,
+and what we expect should happen on success.</p>
+
+<p>Currently, it is assumed that the call is successful - an option for failure
+will be added in the future when I need it :)</p>
+
+<p>Here's an asynchronous ajax test:</p>
+
+<div class="highlight highlight-coffeescript"><pre>
+<span class="pl-c"># we don't use getJSON in this example, but this is how to create a fake object</span>
+<span class="pl-c"># with multiple methods.</span>
+fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
+
+describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax mocking<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+    it <span class="pl-s1"><span class="pl-pds">'</span>aroma can test asynchronous AJAX<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+        <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
+        <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
+        <span class="pl-v"><span class="pl-v">ajaxTest <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">AjaxTest</span>( scenario )
+        ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
+        ajaxTest.returnFromServer( { <span class="pl-v"><span class="pl-v">status:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">answer:</span></span> [ <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] } )
+        <span class="pl-en">ajaxTest.onSuccess </span><span class="pl-k">=</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [ <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] ], <span class="pl-c1">null</span> )
+
+        tested.doAsyncAjax( { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> } )
+        ajaxTest.verify()
+        scenario.end()</pre></div>
+
+<p>this is the code that passes it</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="pl-st">class</span> <span class="pl-en">Example</span>
+    <span class="pl-en">doAsyncAjax</span><span class="pl-k">:</span><span class="pl-vpf"> <span class="pl-vpf">( data )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        <span class="pl-en">success </span><span class="pl-k">=</span><span class="pl-vpf"> <span class="pl-vpf">(data)</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+            $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
+            $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
+        $.ajax { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> data, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">success:</span></span> success }</pre></div>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/haarcuba">haarcuba</a> can be found on <a href="https://github.com/haarcuba/aroma">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
