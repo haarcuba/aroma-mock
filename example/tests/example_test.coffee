@@ -1,19 +1,12 @@
 require 'globals'
-example = require 'example/example'
+require 'should'
+example = require '../example'
 
 fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
 fakeGlobal( 'Point', [] )
 
-class ExampleTest extends Suite
-	test_Addition: =>
-		tested = new example.Example()
-		assertions.equal 5, tested.add( 3, 2 )
-
-	test_Multiplication: =>
-		tested = new example.Example()
-		assertions.equal 6, tested.mul( 3, 2 )
-
-	test_GetJSONWithJQuery: =>
+describe 'example of aroma mocking framework', ->
+	it 'should get JSON with jQuery', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArgument( 'doneCallback' ) ], null )
@@ -24,7 +17,7 @@ class ExampleTest extends Suite
 		capturedCallback = SaveArgument.saved( 'doneCallback' )
 		capturedCallback()
 
-	test_UseJQueryOnDOM: =>
+	it 'should use jQuery on the DOM', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
@@ -32,21 +25,21 @@ class ExampleTest extends Suite
 		tested.useJQueryOnDOM( '123' )
 		scenario.end()
 
-	test_JQuerySelectorExpectation: =>
+	it 'should use jQuery on the DOM: example of expect_$ shorthand notation', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect_$( '#input_element', 'val', [ '456' ], null )
 		tested.useJQueryOnDOM( '456' )
 		scenario.end()
 
-	test_ExpectArguemntToBeNull: =>
+	it 'should handle null argument expectations', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect call( '$', [ null ], null )
 		tested.callJQueryWithNull()
 		scenario.end()
 
-	test_ExpectCallbackToUse_$_With_this: =>
+	it "expect callback to use $ with `this' ", ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect_$( '#product', 'on', [ 'change', new SaveArgument( "productChangeCallback" ) ], null )
@@ -54,10 +47,10 @@ class ExampleTest extends Suite
 		tested.registerCallbackForProductChange()
 		callback = SaveArgument.saved( "productChangeCallback" )
 		callback.apply( THIS )
-		assertions.equal( 123, tested.lastProductChanged() )
+		tested.lastProductChanged().should.equal 123
 		scenario.end()
 
-	test_Hooks: =>
+	it 'aroma supports hooks simulating action taken by a mocked object', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		event = { id: 123, text: 'hi there' }
@@ -69,7 +62,7 @@ class ExampleTest extends Suite
 		tested.schedulerExample( 123, fakeScheduler )
 		scenario.end()
 
-	test_FakeClass: =>
+	it 'aroma can moch classes', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect call( 'Point', [ 5, 4 ], fakeObject( 'aPoint', [ 'show' ] ) )
@@ -77,7 +70,7 @@ class ExampleTest extends Suite
 		tested.instantiatePoint()
 		scenario.end()
 
-	test_Asynchrounous_AJAX: =>
+	it 'aroma can test asynchronous AJAX', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		ajaxTest = new AjaxTest( scenario )
@@ -90,6 +83,3 @@ class ExampleTest extends Suite
 		tested.doAsyncAjax( { a: 1, b: 2 } )
 		ajaxTest.verify()
 		scenario.end()
-
-test = new ExampleTest()
-test.run()

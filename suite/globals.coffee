@@ -2,13 +2,9 @@ argumentexpectations = require 'argumentexpectations'
 expectation = require 'expectation'
 fakeobject = require 'fakeobject'
 scenario = require 'scenario'
-suite = require 'suite'
 common = require 'common'
 ajaxtest = require 'ajaxtest'
-global.assertions = require 'assertions'
 
-global.Suite = suite.Suite
-global.ls = common.ls
 global.Scenario = scenario.Scenario
 global.Call = expectation.Call
 global.Equals = argumentexpectations.Equals

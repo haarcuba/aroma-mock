@@ -1,0 +1,12 @@
+{
+  "name": "aroma",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "coffee-script": "^1.8.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+	"should": "*"
+  }
+}

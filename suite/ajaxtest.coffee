@@ -18,10 +18,8 @@ class AjaxTest
 		actualAjaxArgs.success( @_dataFromServer )
 
 	_verifyAjaxArguments: ( actualAjaxArgs ) =>
-		try
-			for key, value of @_expectedArguments
-				assertions.equal value, actualAjaxArgs[ key ]
-		catch error
-			throw "failed to verify ajax arguments!"
+		for key, value of @_expectedArguments
+			if not Object.equal value, actualAjaxArgs[ key ]
+				throw "failed to verify ajax arguments!"
 
 exports.AjaxTest = AjaxTest

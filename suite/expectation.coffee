@@ -35,6 +35,6 @@ class Call
 
 	toString: =>
 		expectationStrings = (e.toString() for e in @_argumentExpectations)
-		result = "#{@_path}(#{common.join( expectationStrings, ',' )})"
+		result = "#{@_path}(#{expectationStrings.join(',')})"
 
 exports.Call = Call
