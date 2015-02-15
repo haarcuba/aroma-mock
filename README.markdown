@@ -1,26 +1,16 @@
-# Aroma - Unit testing for Coffee Script
+# Aroma - Mocking Framework for Coffee Script
 
-Aroma is a Coffee Script unit test suite. It is designed to work directly with CoffeeScript sources, and provides a useful scenario-expectations construct and easy, on the fly mock object generation.
+Aroma is a Coffee Script Mock Framework. It provides a useful scenario-expectations construct and easy, on the fly mock object generation.
 
 The scenario verifies the exact expected function call sequence including the function arguments. Scenarios are specified before the code is run, making the tests well organized, readable and more explicit. 
 
+The scenario abstraction verifies that things happen *exactly* as specified: i.e. we do not only verify that some mock function was called with specific paramenter, we verify that it has *not* been called more times that it should have been, with some other parameters.
+
 Original concepts were carried over from Voodoo-Mock, a C++/Python unit test framework.
 
-## Trivial Example
-Here's a trivial test suite, that does't use any mocking:
 
-
-```coffeescript
-class CalculatorTest extends Suite
-	test_Addition: =>
-		tested = new calculator.Calculator()
-		assertions.equal 5, tested.add( 3, 2 )
-
-new CalculatorTest.run() # don't forget this :)
-```
-
-## Interesting Example
-Here's a more interesting example test, that mocks the jQuery $ symbol and tests that it is used as expected. 
+## Example
+Here's an example test, that mocks the jQuery $ symbol and tests that it is used as expected. 
 The `call` expectation: 
 
 	call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
@@ -41,15 +31,24 @@ I hope this makes the following, complete listing, clear.
 
 ```coffeescript
 require 'globals' # import the Aroma test suite
-example = require 'example/example' # import the tested unit
+example = require '../example'
 
-fakeGlobal( '$', [ 'getJSON' ] ) # make a mock $ accessible in the tested unit 
-# we also mock the getJSON method on the $ object, since we will want to use it later for expectations
+fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
+fakeGlobal( 'Point', [] )
 
-class ExampleTest extends Suite
-	# this test expects the useJQueryOnDOM method to call jQuery with a selector, 
-	# and then call the 'val' method on the result, so two expectations overall.
-	test_UseJQueryOnDOM: =>
+describe 'example of aroma mocking framework', ->
+	it 'should get JSON with jQuery', ->
+		tested = new example.Example()
+		scenario = new Scenario()
+		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArgument( 'doneCallback' ) ], null )
+
+		tested.getSomeJSON()
+		scenario.end()
+
+		capturedCallback = SaveArgument.saved( 'doneCallback' )
+		capturedCallback()
+
+	it 'should use jQuery on the DOM', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
@@ -57,27 +56,12 @@ class ExampleTest extends Suite
 		tested.useJQueryOnDOM( '123' )
 		scenario.end()
 
-	# this is actually the same test as before, but uses the expect_$ shorthand
-	test_JQuerySelectorExpectation: =>
+	it 'should use jQuery on the DOM: example of expect_$ shorthand notation', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		scenario.expect_$( '#input_element', 'val', [ '456' ], null )
 		tested.useJQueryOnDOM( '456' )
 		scenario.end()
-
-	# this tests getJSON, captures the callback passed to it, and then calls it
-	test_GetJSONWithJQuery: =>
-		tested = new example.Example()
-		scenario = new Scenario()
-		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArguement( 'doneCallback' ) ], null )
-
-		tested.getSomeJSON()
-		scenario.end()
-
-		capturedCallback = SaveArguement.saved( 'doneCallback' )
-		capturedCallback()
-
-new ExampleTest.run() # don't forget this :)
 ```
 
 here's the code that passes this test:
@@ -111,8 +95,8 @@ Here's an asynchronous ajax test:
 # with multiple methods.
 fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
 
-class ExampleTest extends Suite
-	test_Asynchronous_AJAX: =>
+describe 'example of aroma ajax mocking', ->
+	it 'aroma can test asynchronous AJAX', ->
 		tested = new example.Example()
 		scenario = new Scenario()
 		ajaxTest = new AjaxTest( scenario )
@@ -137,6 +121,3 @@ class Example
 			$("#output_element").val( data.answer )
 		$.ajax { url: '/path/to/return_keys.json', data: data, type: 'POST', success: success }
 ```
-
-## Prerequisites
-Aroma relies on CoffeeScript and Node.js to be installed on your system.
