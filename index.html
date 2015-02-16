@@ -69,26 +69,27 @@ In order for Mocha to work with CoffeeScript you must use it like this:</p>
 </code></pre>
 
 <h2>
-<a id="example-tests" class="anchor" href="#example-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Tests</h2>
+<a id="quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Start</h2>
 
 <p>Here's an example test, that mocks the jQuery $ symbol and tests that it is
-used as expected.  The <code>call</code> expectation: </p>
+used as expected.  Before reading the entire thing, let's just look at the <code>call</code> expectation: </p>
 
 <pre><code>call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
 </code></pre>
 
 <p>expresses our expectation that the tested code will call <code>$</code> with
 <code>"#input_element"</code> as its first argument. We also arrange that the return value
-of this call will be a Mock Object called <code>element</code>.  We <em>then</em> expect that
-this <code>element</code> object's <code>val</code> method will be called with one argument, the
-string <code>'123'</code>. This is expressed in the expectation:</p>
+of this call will be a Mock Object called <code>element</code>.  </p>
+
+<p>We <em>then</em> expect that this <code>element</code> object's <code>val</code> method will be called with
+one argument, the string <code>'123'</code>. This is expressed in the expectation:</p>
 
 <pre><code>call( 'element.val', [ '123' ], null )
 </code></pre>
 
 <p>Since we don't care about the return value from this call, we used <code>null</code>.</p>
 
-<p>Since JQuery expectations are commonplace, we can use a the shorthand
+<p>Since jQuery expectations are commonplace, we can use a the shorthand
 <code>expect_$</code> for this 2-call expectation - this is demonstrated below.</p>
 
 <p>I hope this makes the following, complete listing, clear.</p>
