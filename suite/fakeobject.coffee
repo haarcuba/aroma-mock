@@ -1,4 +1,4 @@
-scenario = require 'scenario'
+scenario = require './scenario'
 
 class FakeObject
 	constructor: ( path, methods ) ->

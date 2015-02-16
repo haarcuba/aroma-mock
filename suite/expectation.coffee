@@ -1,5 +1,4 @@
-argumentexpectations = require 'argumentexpectations'
-common = require 'common'
+argumentexpectations = require './argumentexpectations'
 
 class Call
 	constructor: ( path, argumentExpectations, result ) ->

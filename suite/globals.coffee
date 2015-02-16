@@ -1,9 +1,8 @@
-argumentexpectations = require 'argumentexpectations'
-expectation = require 'expectation'
-fakeobject = require 'fakeobject'
-scenario = require 'scenario'
-common = require 'common'
-ajaxtest = require 'ajaxtest'
+argumentexpectations = require './argumentexpectations'
+expectation = require './expectation'
+fakeobject = require './fakeobject'
+scenario = require './scenario'
+ajaxtest = require './ajaxtest'
 
 global.Scenario = scenario.Scenario
 global.Call = expectation.Call
@@ -16,7 +15,6 @@ global.fakeGlobal = ( name, methods ) ->
 	global[ name ] = fakeobject.fakeObject( name, methods )
 
 global.call = ( path, argumentexpectations, result ) -> new expectation.Call( path, argumentexpectations, result )
-global.common = common
 global.window = global
 global.THIS = { fakeThisObject: "#{Math.random().toString()[ 2..5 ]}_this",\
 				toString: => "this" }

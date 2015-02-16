@@ -1,12 +1,42 @@
 {
   "name": "aroma",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "coffee-script": "^1.8.0"
+  "description": "CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want",
+  "author": {
+    "name": "Yoav Kleinberger",
+    "email": "haarcuba@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/haarcuba/aroma.git"
+  },
+  "dependencies": {
+    "coffee-script": "^1.8.0",
+    "sugar": "^1.4.1"
+  },
+  "keywords": [
+    "test",
+    "bdd",
+    "tdd"
+  ],
+  "main": "./suite/globals",
   "devDependencies": {
     "mocha": "*",
-	"should": "*"
-  }
+    "should": "*"
+  },
+  "files": [
+    "suite",
+    "example",
+    "LICENSE"
+  ],
+  "licenses": [
+    {
+      "type": "GPL",
+      "url": "https://raw.githubusercontent.com/haarcuba/aroma/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/haarcuba/aroma/issues"
+  },
+  "homepage": "http://haarcuba.github.io/aroma"
 }
