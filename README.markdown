@@ -1,4 +1,4 @@
-# Aroma - Mocking Framework for Coffee Script
+# AromaMock - Mocking Framework for Coffee Script
 
 Aroma is a Coffee Script Mock Framework. It provides a useful scenario-expectations construct and easy, on the fly mock object generation.
 

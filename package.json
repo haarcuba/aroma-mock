@@ -1,5 +1,5 @@
 {
-  "name": "aroma",
+  "name": "aroma-mock",
   "version": "0.1.0",
   "description": "CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want",
   "author": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/haarcuba/aroma.git"
+    "url": "git://github.com/haarcuba/aroma-mock.git"
   },
   "dependencies": {
     "coffee-script": "^1.8.0",
@@ -32,11 +32,11 @@
   "licenses": [
     {
       "type": "GPL",
-      "url": "https://raw.githubusercontent.com/haarcuba/aroma/master/LICENSE"
+      "url": "https://raw.githubusercontent.com/haarcuba/aroma-mock/master/LICENSE"
     }
   ],
   "bugs": {
-    "url": "https://github.com/haarcuba/aroma/issues"
+    "url": "https://github.com/haarcuba/aroma-mock/issues"
   },
-  "homepage": "http://haarcuba.github.io/aroma"
+  "homepage": "http://haarcuba.github.io/aroma-mock"
 }
