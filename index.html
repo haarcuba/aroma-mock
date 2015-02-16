@@ -1,51 +1,36 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=640">
+    <meta name="description" content="Aroma : CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want">
 
-    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <script type="text/javascript" src="javascripts/modernizr.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
-    </script>
-    <title>Aroma by haarcuba</title>
+    <title>Aroma</title>
   </head>
 
   <body>
-    <a id="forkme_banner" href="https://github.com/haarcuba/aroma">View on GitHub</a>
-    <div class="shell">
 
-      <header>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <h1>Aroma</h1>
-            <h2>CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want</h2>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-      </header>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/haarcuba/aroma">View on GitHub</a>
 
-      <section id="downloads">
-        <span class="inner">
-          <a href="https://github.com/haarcuba/aroma/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/haarcuba/aroma/tarball/master" class="tgz"><em>download</em> .TGZ</a>
-        </span>
-      </section>
+          <h1 id="project_title">Aroma</h1>
+          <h2 id="project_tagline">CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/haarcuba/aroma/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/haarcuba/aroma/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      <span class="banner-fix"></span>
-
-
-      <section id="main_content">
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a id="aroma---mocking-framework-for-coffee-script" class="anchor" href="#aroma---mocking-framework-for-coffee-script" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aroma - Mocking Framework for Coffee Script</h1>
 
@@ -150,7 +135,7 @@ describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax 
         <span class="pl-v"><span class="pl-v">ajaxTest <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">AjaxTest</span>( scenario )
         ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
         ajaxTest.returnFromServer( { <span class="pl-v"><span class="pl-v">status:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">answer:</span></span> [ <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] } )
-        <span class="pl-en">ajaxTest.onSuccess </span><span class="pl-k">=</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        <span class="pl-en">ajaxTest.onSuccessScenario </span><span class="pl-k">=</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
             scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
             scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [ <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] ], <span class="pl-c1">null</span> )
 
@@ -166,22 +151,57 @@ describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax 
             $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
             $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
         $.ajax { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> data, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">success:</span></span> success }</pre></div>
+
+<p>a test that checks the response to an error can also be written</p>
+
+<div class="highlight highlight-coffeescript"><pre>
+<span class="pl-c"># we don't use getJSON in this example, but this is how to create a fake object</span>
+<span class="pl-c"># with multiple methods.</span>
+fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
+
+describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax mocking<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+    it <span class="pl-s1"><span class="pl-pds">'</span>aroma asynchronous AJAX error example<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+        <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
+        <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
+        <span class="pl-v"><span class="pl-v">ajaxTest <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">AjaxTest</span>( scenario )
+        ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
+        ajaxTest.errorFromServer( <span class="pl-c1">null</span>, <span class="pl-s1"><span class="pl-pds">'</span>error text 123<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span> )
+        <span class="pl-en">ajaxTest.onErrorScenario </span><span class="pl-k">=</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>error text 123<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [] ], <span class="pl-c1">null</span> )
+
+        tested.doAsyncAjax( { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> } )
+        ajaxTest.verify( <span class="pl-s1"><span class="pl-pds">'</span>error<span class="pl-pds">'</span></span> )
+        scenario.end()</pre></div>
+
+<p>This code passes the test, as well as the previous one:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="pl-st">class</span> <span class="pl-en">Example</span>
+    <span class="pl-en">doAsyncAjax</span><span class="pl-k">:</span><span class="pl-vpf"> <span class="pl-vpf">( data )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+        <span class="pl-en">success </span><span class="pl-k">=</span><span class="pl-vpf"> <span class="pl-vpf">(data)</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+            $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
+            $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
+        <span class="pl-en">error </span><span class="pl-k">=</span><span class="pl-vpf"> <span class="pl-vpf">( unused, text, unused2 )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
+            $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( text )
+            $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( [] )
+
+        $.ajax {    <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>,\
+                    <span class="pl-v"><span class="pl-v">data:</span></span> data,
+                    <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>,
+                    <span class="pl-v"><span class="pl-v">success:</span></span> success,
+                    <span class="pl-v"><span class="pl-v">error:</span></span> error }</pre></div>
       </section>
+    </div>
 
-      <footer>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p>this project by <a href="https://github.com/haarcuba">haarcuba</a> can be found on <a href="https://github.com/haarcuba/aroma">GitHub</a></p>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
-        <span class="octocat"></span>
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Aroma maintained by <a href="https://github.com/haarcuba">haarcuba</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
-
     </div>
 
     
+
   </body>
 </html>
