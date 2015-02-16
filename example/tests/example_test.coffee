@@ -1,4 +1,4 @@
-require 'globals'
+require 'aroma-mock'
 require 'should'
 example = require '../example'
 
