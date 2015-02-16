@@ -1,29 +1,57 @@
 # AromaMock - Mocking Framework for Coffee Script
 
-Aroma is a Coffee Script Mock Framework. It provides a useful scenario-expectations construct and easy, on the fly mock object generation.
+Aroma is a CoffeeScript Mock Framework. This of course means that it *can* be
+used to test and develop JavaScript, but in this document, I will address
+CoffeeScript, because I like it better. It provides a useful
+scenario-expectations construct and easy, on the fly mock object generation.
 
-The scenario verifies the exact expected function call sequence including the function arguments. Scenarios are specified before the code is run, making the tests well organized, readable and more explicit. 
+The scenario verifies the exact expected function call sequence including the
+function arguments. Scenarios are specified before the code is run, making the
+tests well organized, readable and more explicit. 
 
-The scenario abstraction verifies that things happen *exactly* as specified: i.e. we do not only verify that some mock function was called with specific paramenter, we verify that it has *not* been called more times that it should have been, with some other parameters.
+The scenario abstraction verifies that things happen *exactly* as specified:
+i.e. we do not only verify that some mock function was called with specific
+paramenter, we verify that it has *not* been called more times that it should
+have been, with some other parameters.
 
-Original concepts were carried over from Voodoo-Mock, a C++/Python unit test framework.
+Original concepts were carried over from [Voodoo-Mock](http://github.com/shlomimatichin/Voodoo-Mock), a C++/Python unit test
+framework.
+
+## Installation
+
+	$ npm install aroma-mock
+
+You will also probably want to
+
+	$ npm install mocha coffee-script
+
+## Running CoffeeScript Tests with Mocha
+
+In the following examples I use [Mocha](http://mochajs.org) for a test runner.
+In order for Mocha to work with CoffeeScript you must use it like this:
+
+	$ mocha --compilers coffee:coffee-script/register [tests...]
 
 
-## Example
-Here's an example test, that mocks the jQuery $ symbol and tests that it is used as expected. 
-The `call` expectation: 
+## Quick Start
+Here's an example test, that mocks the jQuery $ symbol and tests that it is
+used as expected.  Before reading the entire thing, let's just look at the `call` expectation: 
 
 	call( '$', [ "#input_element" ], fakeObject( 'element', ['val'] ) )
 
-expresses our expectation that the tested code will call `$` with `"#input_element"` as its first argument. We also arrange that
-the return value of this call will be a Mock Object called `element`.
-We *then* expect that this `element` object's `val` method will be called with the expectation:
+expresses our expectation that the tested code will call `$` with
+`"#input_element"` as its first argument. We also arrange that the return value
+of this call will be a Mock Object called `element`.  
+
+We *then* expect that this `element` object's `val` method will be called with
+one argument, the string `'123'`. This is expressed in the expectation:
 
 	call( 'element.val', [ '123' ], null )
 
 Since we don't care about the return value from this call, we used `null`.
 
-Since JQuery expectations are commonplace, we can use a the shorthand `expect_$` for this 2-call expectation - this is demonstrated below.
+Since jQuery expectations are commonplace, we can use a the shorthand
+`expect_$` for this 2-call expectation - this is demonstrated below.
 	
 
 I hope this makes the following, complete listing, clear.
