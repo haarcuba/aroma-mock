@@ -7,15 +7,24 @@ class AjaxTest
 	expect: ( expected ) =>
 		@_expectedArguments = expected
 		throw '``success" should not be in expectedAjaxArguments' if expected.success?
+		throw '``error" should not be in expectedAjaxArguments' if expected.error?
 
 	returnFromServer: ( data ) =>
 		@_dataFromServer = data
 
-	verify: =>
+	errorFromServer: ( jqXHR, textStatus, errorThrown ) =>
+		@_errorFromServer = [ jqXHR, textStatus, errorThrown ]
+
+	verify: ( result ) =>
 		actualAjaxArgs = SaveArgument.saved( 'actualAjaxArgs' )
 		this._verifyAjaxArguments( actualAjaxArgs )
-		this.onSuccess()
-		actualAjaxArgs.success( @_dataFromServer )
+		if result == 'success'
+			this.onSuccessScenario()
+			actualAjaxArgs.success( @_dataFromServer )
+		else if result == 'error'
+			this.onErrorScenario()
+			[ jqXHR, textStatus, errorThrown ] = @_errorFromServer
+			actualAjaxArgs.error( jqXHR, textStatus, errorThrown )
 
 	_verifyAjaxArguments: ( actualAjaxArgs ) =>
 		for key, value of @_expectedArguments

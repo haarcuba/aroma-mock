@@ -38,6 +38,14 @@ class Example
 		success = (data) =>
 			$("#status").val( data.status )
 			$("#output_element").val( data.answer )
-		$.ajax { url: '/path/to/return_keys.json', data: data, type: 'POST', success: success }
+		error = ( unused, text, unused2 ) =>
+			$("#status").val( text )
+			$("#output_element").val( [] )
+			
+		$.ajax { 	url: '/path/to/return_keys.json',\
+					data: data,
+					type: 'POST',
+					success: success,
+					error: error }
 
 exports.Example = Example

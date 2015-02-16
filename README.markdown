@@ -102,7 +102,7 @@ describe 'example of aroma ajax mocking', ->
 		ajaxTest = new AjaxTest( scenario )
 		ajaxTest.expect( { url: '/path/to/return_keys.json', data: { a: 1, b: 2 }, type: 'POST' } )
 		ajaxTest.returnFromServer( { status: 'ok', answer: [ 'a', 'b' ] } )
-		ajaxTest.onSuccess = =>
+		ajaxTest.onSuccessScenario = =>
 			scenario.expect_$( "#status", 'val', [ 'ok' ], null )
 			scenario.expect_$( "#output_element", 'val', [ [ 'a', 'b' ] ], null )
 
@@ -120,4 +120,48 @@ class Example
 			$("#status").val( data.status )
 			$("#output_element").val( data.answer )
 		$.ajax { url: '/path/to/return_keys.json', data: data, type: 'POST', success: success }
+```
+
+a test that checks the response to an error can also be written
+
+
+```coffeescript
+
+# we don't use getJSON in this example, but this is how to create a fake object
+# with multiple methods.
+fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
+
+describe 'example of aroma ajax mocking', ->
+	it 'aroma asynchronous AJAX error example', ->
+		tested = new example.Example()
+		scenario = new Scenario()
+		ajaxTest = new AjaxTest( scenario )
+		ajaxTest.expect( { url: '/path/to/return_keys.json', data: { a: 1, b: 2 }, type: 'POST' } )
+		ajaxTest.errorFromServer( null, 'error text 123', null )
+		ajaxTest.onErrorScenario = =>
+			scenario.expect_$( "#status", 'val', [ 'error text 123' ], null )
+			scenario.expect_$( "#output_element", 'val', [ [] ], null )
+
+		tested.doAsyncAjax( { a: 1, b: 2 } )
+		ajaxTest.verify( 'error' )
+		scenario.end()
+```
+
+This code passes the test, as well as the previous one:
+
+```coffeescript
+class Example
+	doAsyncAjax: ( data ) =>
+		success = (data) =>
+			$("#status").val( data.status )
+			$("#output_element").val( data.answer )
+		error = ( unused, text, unused2 ) =>
+			$("#status").val( text )
+			$("#output_element").val( [] )
+			
+		$.ajax { 	url: '/path/to/return_keys.json',\
+					data: data,
+					type: 'POST',
+					success: success,
+					error: error }
 ```
