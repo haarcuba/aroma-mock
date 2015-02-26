@@ -1,4 +1,4 @@
-# AromaMock - Mocking Framework for Coffee Script
+# AromaMock - Mocking Framework for JavaScript and CoffeeScript
 
 Aroma is a CoffeeScript Mock Framework. This of course means that it *can* be
 used to test and develop JavaScript, but in this document, I will address
@@ -32,6 +32,9 @@ In order for Mocha to work with CoffeeScript you must use it like this:
 
 	$ mocha --compilers coffee:coffee-script/register [tests...]
 
+## Using Aroma-Mock with JavaScript
+
+Aroma-Mock is written in CoffeeScript. It can be used in JavaScript by requiring the `coffee-script/register` in your test code, and then requiring `aroma-mock`:
 
 ## Quick Start
 Here's an example test, that mocks the jQuery $ symbol and tests that it is
