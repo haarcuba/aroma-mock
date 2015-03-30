@@ -73,7 +73,7 @@ I hope this makes the following, complete listing, clear.
 
 
 ```coffeescript
-require 'globals' # import the Aroma test suite
+require 'aroma-mock' # import the Aroma-Mock framework
 example = require '../example'
 
 fakeGlobal( '$', [ 'getJSON', 'ajax' ] )
