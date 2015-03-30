@@ -49,13 +49,25 @@ of this call will be a Mock Object called `element`.
 We *then* expect that this `element` object's `val` method will be called with
 one argument, the string `'123'`. This is expressed in the expectation:
 
-	call( 'element.val', [ '123' ], null )
+	call( 'element.val', [ '123' ] )
 
-Since we don't care about the return value from this call, we used `null`.
+Since we don't care about the return value from this call, we leave it unspecified. We can also use `null`
+
+	call( 'element.val', [ '123' ], null )
 
 Since jQuery expectations are commonplace, we can use a the shorthand
 `expect_$` for this 2-call expectation - this is demonstrated below.
 	
+Another thing to note is the use of `capture` and `captured` to test functions
+called with callbacks. E.g., if our code calls `fs.mkdir( 'somepath', onCreated
+)`, we want to later call this `onCreated` function. We therefore use the
+`capture` feature of Aroma-Mock to get at it:
+
+    call( 'fs.mkdir', [ 'somepath', capture( 'onCreatedCallback' ) ] )
+
+and later call it via the `captured` API:
+
+    captured.onCreatedCallback()
 
 I hope this makes the following, complete listing, clear.
 
@@ -71,13 +83,12 @@ describe 'example of aroma mocking framework', ->
 	it 'should get JSON with jQuery', ->
 		tested = new example.Example()
 		scenario = new Scenario()
-		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArgument( 'doneCallback' ) ], null )
+		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, capture( 'doneCallback' ) ], null )
 
 		tested.getSomeJSON()
 		scenario.end()
 
-		capturedCallback = SaveArgument.saved( 'doneCallback' )
-		capturedCallback()
+		captured.doneCallback()
 
 	it 'should use jQuery on the DOM', ->
 		tested = new example.Example()

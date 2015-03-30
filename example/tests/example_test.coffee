@@ -9,13 +9,12 @@ describe 'example of aroma mocking framework', ->
 	it 'should get JSON with jQuery', ->
 		tested = new example.Example()
 		scenario = new Scenario()
-		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, new SaveArgument( 'doneCallback' ) ], null )
+		scenario.expect call( '$.getJSON', [ 'www.google.com', {a:1, b:2}, capture( 'doneCallback' ) ], null )
 
 		tested.getSomeJSON()
 		scenario.end()
 
-		capturedCallback = SaveArgument.saved( 'doneCallback' )
-		capturedCallback()
+		captured.doneCallback()
 
 	it 'should use jQuery on the DOM', ->
 		tested = new example.Example()
@@ -42,11 +41,10 @@ describe 'example of aroma mocking framework', ->
 	it "expect callback to use $ with `this' ", ->
 		tested = new example.Example()
 		scenario = new Scenario()
-		scenario.expect_$( '#product', 'on', [ 'change', new SaveArgument( "productChangeCallback" ) ], null )
+		scenario.expect_$( '#product', 'on', [ 'change', capture( "productChangeCallback" ) ], null )
 		scenario.expect_$( THIS, 'val', [], 123 )
 		tested.registerCallbackForProductChange()
-		callback = SaveArgument.saved( "productChangeCallback" )
-		callback.apply( THIS )
+		captured.productChangeCallback.apply( THIS )
 		tested.lastProductChanged().should.equal 123
 		scenario.end()
 

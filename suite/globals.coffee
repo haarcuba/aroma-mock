@@ -4,12 +4,15 @@ fakeobject = require './fakeobject'
 scenario = require './scenario'
 ajaxtest = require './ajaxtest'
 
+global.captured = argumentexpectations.SaveArgument.exposeSaved()
 global.Scenario = scenario.Scenario
 global.Call = expectation.Call
 global.Equals = argumentexpectations.Equals
 global.SaveArgument = argumentexpectations.SaveArgument
 global.IgnoreArgument = argumentexpectations.IgnoreArgument
 global.ArgumentExpectation = argumentexpectations.ArgumentExpectation
+global.capture = ( name ) ->
+    new argumentexpectations.SaveArgument( name )
 global.fakeObject = fakeobject.fakeObject
 global.fakeGlobal = ( name, methods ) ->
 	global[ name ] = fakeobject.fakeObject( name, methods )
