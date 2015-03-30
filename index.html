@@ -89,60 +89,75 @@ of this call will be a Mock Object called <code>element</code>.  </p>
 <p>We <em>then</em> expect that this <code>element</code> object's <code>val</code> method will be called with
 one argument, the string <code>'123'</code>. This is expressed in the expectation:</p>
 
-<pre><code>call( 'element.val', [ '123' ], null )
+<pre><code>call( 'element.val', [ '123' ] )
 </code></pre>
 
-<p>Since we don't care about the return value from this call, we used <code>null</code>.</p>
+<p>Since we don't care about the return value from this call, we leave it unspecified. We can also use <code>null</code></p>
+
+<pre><code>call( 'element.val', [ '123' ], null )
+</code></pre>
 
 <p>Since jQuery expectations are commonplace, we can use a the shorthand
 <code>expect_$</code> for this 2-call expectation - this is demonstrated below.</p>
 
+<p>Another thing to note is the use of <code>capture</code> and <code>captured</code> to test functions
+called with callbacks. E.g., if our code calls <code>fs.mkdir( 'somepath', onCreated
+)</code>, we want to later call this <code>onCreated</code> function. We therefore use the
+<code>capture</code> feature of Aroma-Mock to get at it:</p>
+
+<pre><code>call( 'fs.mkdir', [ 'somepath', capture( 'onCreatedCallback' ) ] )
+</code></pre>
+
+<p>and later call it via the <code>captured</code> API:</p>
+
+<pre><code>captured.onCreated()
+</code></pre>
+
 <p>I hope this makes the following, complete listing, clear.</p>
 
-<div class="highlight highlight-coffeescript"><pre><span class="pl-s3">require</span> <span class="pl-s1"><span class="pl-pds">'</span>globals<span class="pl-pds">'</span></span> <span class="pl-c"># import the Aroma test suite</span>
-<span class="pl-v"><span class="pl-v">example <span class="pl-k">=</span></span></span> <span class="pl-s3">require</span> <span class="pl-s1"><span class="pl-pds">'</span>../example<span class="pl-pds">'</span></span>
+<div class="highlight highlight-coffeescript"><pre><span class="pl-c1">require</span> <span class="pl-s"><span class="pl-pds">'</span>globals<span class="pl-pds">'</span></span> <span class="pl-c"># import the Aroma test suite</span>
+<span class="pl-v"><span class="pl-v">example <span class="pl-k">=</span></span></span> <span class="pl-c1">require</span> <span class="pl-s"><span class="pl-pds">'</span>../example<span class="pl-pds">'</span></span>
 
-fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
-fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>Point<span class="pl-pds">'</span></span>, [] )
+fakeGlobal( <span class="pl-s"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
+fakeGlobal( <span class="pl-s"><span class="pl-pds">'</span>Point<span class="pl-pds">'</span></span>, [] )
 
-describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma mocking framework<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
-    it <span class="pl-s1"><span class="pl-pds">'</span>should get JSON with jQuery<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+describe <span class="pl-s"><span class="pl-pds">'</span>example of aroma mocking framework<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
+    it <span class="pl-s"><span class="pl-pds">'</span>should get JSON with jQuery<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
         <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
         <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
-        scenario.expect call( <span class="pl-s1"><span class="pl-pds">'</span>$.getJSON<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>www.google.com<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">a:</span></span><span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span><span class="pl-c1">2</span>}, <span class="pl-k">new</span> <span class="pl-en">SaveArgument</span>( <span class="pl-s1"><span class="pl-pds">'</span>doneCallback<span class="pl-pds">'</span></span> ) ], <span class="pl-c1">null</span> )
+        scenario.expect call( <span class="pl-s"><span class="pl-pds">'</span>$.getJSON<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>www.google.com<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">a:</span></span><span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span><span class="pl-c1">2</span>}, capture( <span class="pl-s"><span class="pl-pds">'</span>doneCallback<span class="pl-pds">'</span></span> ) ], <span class="pl-c1">null</span> )
 
         tested.getSomeJSON()
         scenario.end()
 
-        <span class="pl-v"><span class="pl-v">capturedCallback <span class="pl-k">=</span></span></span> SaveArgument.saved( <span class="pl-s1"><span class="pl-pds">'</span>doneCallback<span class="pl-pds">'</span></span> )
-        capturedCallback()
+        captured.doneCallback()
 
-    it <span class="pl-s1"><span class="pl-pds">'</span>should use jQuery on the DOM<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+    it <span class="pl-s"><span class="pl-pds">'</span>should use jQuery on the DOM<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
         <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
         <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
-        scenario.expect call( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">"</span>#input_element<span class="pl-pds">"</span></span> ], fakeObject( <span class="pl-s1"><span class="pl-pds">'</span>element<span class="pl-pds">'</span></span>, [<span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>] ) )
-        scenario.expect call( <span class="pl-s1"><span class="pl-pds">'</span>element.val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
-        tested.useJQueryOnDOM( <span class="pl-s1"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> )
+        scenario.expect call( <span class="pl-s"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">"</span>#input_element<span class="pl-pds">"</span></span> ], fakeObject( <span class="pl-s"><span class="pl-pds">'</span>element<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>] ) )
+        scenario.expect call( <span class="pl-s"><span class="pl-pds">'</span>element.val<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+        tested.useJQueryOnDOM( <span class="pl-s"><span class="pl-pds">'</span>123<span class="pl-pds">'</span></span> )
         scenario.end()
 
-    it <span class="pl-s1"><span class="pl-pds">'</span>should use jQuery on the DOM: example of expect_$ shorthand notation<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+    it <span class="pl-s"><span class="pl-pds">'</span>should use jQuery on the DOM: example of expect_$ shorthand notation<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
         <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
         <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
-        scenario.expect_$( <span class="pl-s1"><span class="pl-pds">'</span>#input_element<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>456<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
-        tested.useJQueryOnDOM( <span class="pl-s1"><span class="pl-pds">'</span>456<span class="pl-pds">'</span></span> )
+        scenario.expect_$( <span class="pl-s"><span class="pl-pds">'</span>#input_element<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>456<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+        tested.useJQueryOnDOM( <span class="pl-s"><span class="pl-pds">'</span>456<span class="pl-pds">'</span></span> )
         scenario.end()</pre></div>
 
 <p>here's the code that passes this test:</p>
 
-<div class="highlight highlight-coffeescript"><pre><span class="pl-st">class</span> <span class="pl-en">Example</span>
-    <span class="pl-en">useJQueryOnDOM</span><span class="pl-k">:</span><span class="pl-vpf"> <span class="pl-vpf">( text )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-        $(<span class="pl-s1"><span class="pl-pds">"</span>#input_element<span class="pl-pds">"</span></span>).val( text )
+<div class="highlight highlight-coffeescript"><pre><span class="pl-k">class</span> <span class="pl-en">Example</span>
+    <span class="pl-en">useJQueryOnDOM</span><span class="pl-k">:</span><span class="pl-smi"> <span class="pl-smi">( text )</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        $(<span class="pl-s"><span class="pl-pds">"</span>#input_element<span class="pl-pds">"</span></span>).val( text )
 
-    <span class="pl-en">getSomeJSON</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-        $.getJSON <span class="pl-s1"><span class="pl-pds">'</span>www.google.com<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">a:</span></span><span class="pl-c1">1</span>,<span class="pl-v"><span class="pl-v">b:</span></span><span class="pl-c1">2</span>}, <span class="pl-v">this</span>._mycallback
+    <span class="pl-en">getSomeJSON</span><span class="pl-k">:</span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        $.getJSON <span class="pl-s"><span class="pl-pds">'</span>www.google.com<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">a:</span></span><span class="pl-c1">1</span>,<span class="pl-v"><span class="pl-v">b:</span></span><span class="pl-c1">2</span>}, <span class="pl-v">this</span>._mycallback
 
-    <span class="pl-en">_mycallback</span><span class="pl-k">:</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-        <span class="pl-en">console</span>.<span class="pl-s3">log</span>( <span class="pl-s1"><span class="pl-pds">'</span>my callback called!<span class="pl-pds">'</span></span> )
+    <span class="pl-en">_mycallback</span><span class="pl-k">:</span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        <span class="pl-en">console</span>.<span class="pl-c1">log</span>( <span class="pl-s"><span class="pl-pds">'</span>my callback called!<span class="pl-pds">'</span></span> )
 
 <span class="pl-v"><span class="pl-v">exports.Example <span class="pl-k">=</span></span></span> Example</pre></div>
 
@@ -161,18 +176,18 @@ will be added in the future when I need it :)</p>
 <div class="highlight highlight-coffeescript"><pre>
 <span class="pl-c"># we don't use getJSON in this example, but this is how to create a fake object</span>
 <span class="pl-c"># with multiple methods.</span>
-fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
+fakeGlobal( <span class="pl-s"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
 
-describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax mocking<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
-    it <span class="pl-s1"><span class="pl-pds">'</span>aroma can test asynchronous AJAX<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+describe <span class="pl-s"><span class="pl-pds">'</span>example of aroma ajax mocking<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
+    it <span class="pl-s"><span class="pl-pds">'</span>aroma can test asynchronous AJAX<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
         <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
         <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
         <span class="pl-v"><span class="pl-v">ajaxTest <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">AjaxTest</span>( scenario )
-        ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
-        ajaxTest.returnFromServer( { <span class="pl-v"><span class="pl-v">status:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">answer:</span></span> [ <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] } )
-        <span class="pl-en">ajaxTest.onSuccessScenario </span><span class="pl-k">=</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
-            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [ <span class="pl-s1"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] ], <span class="pl-c1">null</span> )
+        ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
+        ajaxTest.returnFromServer( { <span class="pl-v"><span class="pl-v">status:</span></span> <span class="pl-s"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">answer:</span></span> [ <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] } )
+        <span class="pl-en">ajaxTest.onSuccessScenario </span><span class="pl-k">=</span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+            scenario.expect_$( <span class="pl-s"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>ok<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+            scenario.expect_$( <span class="pl-s"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [ <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ] ], <span class="pl-c1">null</span> )
 
         tested.doAsyncAjax( { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> } )
         ajaxTest.verify()
@@ -180,49 +195,49 @@ describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax 
 
 <p>this is the code that passes it</p>
 
-<div class="highlight highlight-coffeescript"><pre><span class="pl-st">class</span> <span class="pl-en">Example</span>
-    <span class="pl-en">doAsyncAjax</span><span class="pl-k">:</span><span class="pl-vpf"> <span class="pl-vpf">( data )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-        <span class="pl-en">success </span><span class="pl-k">=</span><span class="pl-vpf"> <span class="pl-vpf">(data)</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-            $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
-            $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
-        $.ajax { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> data, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">success:</span></span> success }</pre></div>
+<div class="highlight highlight-coffeescript"><pre><span class="pl-k">class</span> <span class="pl-en">Example</span>
+    <span class="pl-en">doAsyncAjax</span><span class="pl-k">:</span><span class="pl-smi"> <span class="pl-smi">( data )</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        <span class="pl-en">success </span><span class="pl-k">=</span><span class="pl-smi"> <span class="pl-smi">(data)</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+            $(<span class="pl-s"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
+            $(<span class="pl-s"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
+        $.ajax { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> data, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">success:</span></span> success }</pre></div>
 
 <p>a test that checks the response to an error can also be written</p>
 
 <div class="highlight highlight-coffeescript"><pre>
 <span class="pl-c"># we don't use getJSON in this example, but this is how to create a fake object</span>
 <span class="pl-c"># with multiple methods.</span>
-fakeGlobal( <span class="pl-s1"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
+fakeGlobal( <span class="pl-s"><span class="pl-pds">'</span>$<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>getJSON<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>ajax<span class="pl-pds">'</span></span> ] )
 
-describe <span class="pl-s1"><span class="pl-pds">'</span>example of aroma ajax mocking<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
-    it <span class="pl-s1"><span class="pl-pds">'</span>aroma asynchronous AJAX error example<span class="pl-pds">'</span></span>, <span class="pl-st">-&gt;</span>
+describe <span class="pl-s"><span class="pl-pds">'</span>example of aroma ajax mocking<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
+    it <span class="pl-s"><span class="pl-pds">'</span>aroma asynchronous AJAX error example<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
         <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">example.Example</span>()
         <span class="pl-v"><span class="pl-v">scenario <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">Scenario</span>()
         <span class="pl-v"><span class="pl-v">ajaxTest <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">AjaxTest</span>( scenario )
-        ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
-        ajaxTest.errorFromServer( <span class="pl-c1">null</span>, <span class="pl-s1"><span class="pl-pds">'</span>error text 123<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span> )
-        <span class="pl-en">ajaxTest.onErrorScenario </span><span class="pl-k">=</span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s1"><span class="pl-pds">'</span>error text 123<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
-            scenario.expect_$( <span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [] ], <span class="pl-c1">null</span> )
+        ajaxTest.expect( { <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>, <span class="pl-v"><span class="pl-v">data:</span></span> { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> }, <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span> } )
+        ajaxTest.errorFromServer( <span class="pl-c1">null</span>, <span class="pl-s"><span class="pl-pds">'</span>error text 123<span class="pl-pds">'</span></span>, <span class="pl-c1">null</span> )
+        <span class="pl-en">ajaxTest.onErrorScenario </span><span class="pl-k">=</span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+            scenario.expect_$( <span class="pl-s"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>error text 123<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span> )
+            scenario.expect_$( <span class="pl-s"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">'</span>val<span class="pl-pds">'</span></span>, [ [] ], <span class="pl-c1">null</span> )
 
         tested.doAsyncAjax( { <span class="pl-v"><span class="pl-v">a:</span></span> <span class="pl-c1">1</span>, <span class="pl-v"><span class="pl-v">b:</span></span> <span class="pl-c1">2</span> } )
-        ajaxTest.verify( <span class="pl-s1"><span class="pl-pds">'</span>error<span class="pl-pds">'</span></span> )
+        ajaxTest.verify( <span class="pl-s"><span class="pl-pds">'</span>error<span class="pl-pds">'</span></span> )
         scenario.end()</pre></div>
 
 <p>This code passes the test, as well as the previous one:</p>
 
-<div class="highlight highlight-coffeescript"><pre><span class="pl-st">class</span> <span class="pl-en">Example</span>
-    <span class="pl-en">doAsyncAjax</span><span class="pl-k">:</span><span class="pl-vpf"> <span class="pl-vpf">( data )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-        <span class="pl-en">success </span><span class="pl-k">=</span><span class="pl-vpf"> <span class="pl-vpf">(data)</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-            $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
-            $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
-        <span class="pl-en">error </span><span class="pl-k">=</span><span class="pl-vpf"> <span class="pl-vpf">( unused, text, unused2 )</span></span> <span class="pl-st"><span class="pl-st">=&gt;</span></span>
-            $(<span class="pl-s1"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( text )
-            $(<span class="pl-s1"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( [] )
+<div class="highlight highlight-coffeescript"><pre><span class="pl-k">class</span> <span class="pl-en">Example</span>
+    <span class="pl-en">doAsyncAjax</span><span class="pl-k">:</span><span class="pl-smi"> <span class="pl-smi">( data )</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        <span class="pl-en">success </span><span class="pl-k">=</span><span class="pl-smi"> <span class="pl-smi">(data)</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+            $(<span class="pl-s"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( data.status )
+            $(<span class="pl-s"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( data.answer )
+        <span class="pl-en">error </span><span class="pl-k">=</span><span class="pl-smi"> <span class="pl-smi">( unused, text, unused2 )</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+            $(<span class="pl-s"><span class="pl-pds">"</span>#status<span class="pl-pds">"</span></span>).val( text )
+            $(<span class="pl-s"><span class="pl-pds">"</span>#output_element<span class="pl-pds">"</span></span>).val( [] )
 
-        $.ajax {    <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>,\
+        $.ajax {    <span class="pl-v"><span class="pl-v">url:</span></span> <span class="pl-s"><span class="pl-pds">'</span>/path/to/return_keys.json<span class="pl-pds">'</span></span>,\
                     <span class="pl-v"><span class="pl-v">data:</span></span> data,
-                    <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s1"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>,
+                    <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>,
                     <span class="pl-v"><span class="pl-v">success:</span></span> success,
                     <span class="pl-v"><span class="pl-v">error:</span></span> error }</pre></div>
         </section>
