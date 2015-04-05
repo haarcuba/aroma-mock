@@ -126,9 +126,6 @@ The `AjaxTest` class allows testing for an asynchronous ajax call. We define
 the parameters of the ajax call, the data supposedly returned from the server,
 and what we expect should happen on success.
 
-Currently, it is assumed that the call is successful - an option for failure
-will be added in the future when I need it :)
-
 Here's an asynchronous ajax test:
 
 ```coffeescript
