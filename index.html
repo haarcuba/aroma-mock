@@ -88,7 +88,7 @@ one argument, the string <code>'123'</code>. This is expressed in the expectatio
 <pre><code>call( 'element.val', [ '123' ], null )
 </code></pre>
 
-<p>Since jQuery expectations are commonplace, we can use a the shorthand
+<p>Since jQuery expectations are commonplace, we can use the shorthand
 <code>expect_$</code> for this 2-call expectation - this is demonstrated below.</p>
 
 <p>Another thing to note is the use of <code>capture</code> and <code>captured</code> to test functions
@@ -228,6 +228,88 @@ describe <span class="pl-s"><span class="pl-pds">'</span>example of aroma ajax m
                     <span class="pl-v"><span class="pl-v">type:</span></span> <span class="pl-s"><span class="pl-pds">'</span>POST<span class="pl-pds">'</span></span>,
                     <span class="pl-v"><span class="pl-v">success:</span></span> success,
                     <span class="pl-v"><span class="pl-v">error:</span></span> error }</pre></div>
+
+<h2>
+<a id="the-callback-cascade-pattern" class="anchor" href="#the-callback-cascade-pattern" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Callback Cascade Pattern</h2>
+
+<p>When writing JavaScript code, it often happens that we get a cascade of
+callback functions, since almost everything is done asynchronously.  For
+example, say we want to check if some directory exists, and if not, create it,
+and then run some subprocess in the directory. If the directory already exists,
+we don't need to create it.</p>
+
+<p>The callback cascade here is</p>
+
+<pre><code>fs.exists =&gt; fs.mkdir =&gt; childProcess.exec
+</code></pre>
+
+<p>We can use <code>capture</code> for this, but it gets ugly really fast. If the callback
+argument for each function in our cascade is the <em>last</em> one, which is often the
+case, e.g.</p>
+
+<pre><code>fs.exists(path, callback)
+</code></pre>
+
+<p>We can use the <em>cascade</em> pattern:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="pl-v"><span class="pl-v">rewire <span class="pl-k">=</span></span></span> <span class="pl-c1">require</span> <span class="pl-s"><span class="pl-pds">'</span>rewire<span class="pl-pds">'</span></span>
+
+describe <span class="pl-s"><span class="pl-pds">'</span>cascade of callbacks<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
+    beforeEach <span class="pl-k">-&gt;</span>
+        cascadeModule.__set__( <span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>, fakeObject( <span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>exists<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>mkdir<span class="pl-pds">'</span></span> ] ) )
+        cascadeModule.__set__( <span class="pl-s"><span class="pl-pds">'</span>childProcess<span class="pl-pds">'</span></span>, fakeObject( <span class="pl-s"><span class="pl-pds">'</span>childProcess<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>exec<span class="pl-pds">'</span></span> ] ) )
+
+    it <span class="pl-s"><span class="pl-pds">'</span>should work<span class="pl-pds">'</span></span>, <span class="pl-k">-&gt;</span>
+        <span class="pl-v"><span class="pl-v">myCallback <span class="pl-k">=</span></span></span> fakeObject( <span class="pl-s"><span class="pl-pds">'</span>myCallback<span class="pl-pds">'</span></span> )
+        scenario.expectCascade [    cascade( <span class="pl-s"><span class="pl-pds">'</span>fs.exists<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>some_path<span class="pl-pds">'</span></span> ], <span class="pl-c1">null</span>, [<span class="pl-c1">false</span>] ),
+                                    cascade( <span class="pl-s"><span class="pl-pds">'</span>fs.mkdir<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>some_path<span class="pl-pds">'</span></span> ] ),
+                                    cascade( <span class="pl-s"><span class="pl-pds">'</span>childProcess.exec<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">'</span>some command<span class="pl-pds">'</span></span>, {<span class="pl-v"><span class="pl-v">cwd:</span></span> <span class="pl-s"><span class="pl-pds">'</span>some_path<span class="pl-pds">'</span></span>} ], <span class="pl-c1">null</span>, [ <span class="pl-c1">null</span>, <span class="pl-s"><span class="pl-pds">"</span>output string<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>error string<span class="pl-pds">"</span></span> ] ),
+                                    call( <span class="pl-s"><span class="pl-pds">'</span>myCallback<span class="pl-pds">'</span></span>, [ <span class="pl-s"><span class="pl-pds">"</span>output string<span class="pl-pds">"</span></span> ] ) ]
+
+        <span class="pl-v"><span class="pl-v">tested <span class="pl-k">=</span></span></span> <span class="pl-k">new</span> <span class="pl-en">cascadeModule.Cascade</span>()
+
+        tested.go( <span class="pl-s"><span class="pl-pds">'</span>some_path<span class="pl-pds">'</span></span>, myCallback )
+        scenario.end()
+</pre></div>
+
+<p>NOTE the use of <a href="https://github.com/jhnns/rewire"><em>rewire</em></a> to mock objects inside the module.</p>
+
+<p>This expresses the expectation that the code will call <code>fs.exists</code> - passing it
+<code>some_path</code>. The <code>fs.exists</code> cascade specifies that <code>fs.exists</code> will return
+<code>null</code>, <em>and then</em> call its callback with the arguments specified in a list, in
+this case <code>[false]</code>, so just one argument.</p>
+
+<p>What happens when <code>fs.exists</code>'s callback is called? Since the directory does
+not exist (we made <code>fs.exists</code> pass <code>false</code> to its callback, remember?) we
+expect it to call <code>fs.mkdir</code>, which will the call <em>its</em> callback.</p>
+
+<p>We then demand that this callback call <code>childProcess.exec</code> and we specify the
+output and error strings passed to <em>its</em> callback, which should, finally, call
+the user's callback.</p>
+
+<p>NOTE the last call in the cascade is a <code>call</code>, not a <code>cascade</code> - since we don't
+want it to automatically call a callback.</p>
+
+<p>The code that passes this test would be:</p>
+
+<div class="highlight highlight-coffeescript"><pre><span class="pl-v"><span class="pl-v">fs <span class="pl-k">=</span></span></span> <span class="pl-c1">require</span> <span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>
+<span class="pl-v"><span class="pl-v">childProcess <span class="pl-k">=</span></span></span> <span class="pl-c1">require</span> <span class="pl-s"><span class="pl-pds">'</span>child_process<span class="pl-pds">'</span></span>
+
+<span class="pl-k">class</span> <span class="pl-en">Cascade</span>
+    <span class="pl-en">go</span><span class="pl-k">:</span><span class="pl-smi"> <span class="pl-smi">( path, callback )</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        <span class="pl-smi">@callback</span> <span class="pl-k">=</span> callback
+        fs.exists path, <span class="pl-smi">(exists)</span> <span class="pl-k">=&gt;</span>
+            <span class="pl-k">if</span> exists
+                <span class="pl-v">this</span>._runChild( path )
+            <span class="pl-k">else</span>
+                fs.mkdir path, <span class="pl-k">=&gt;</span>
+                    <span class="pl-v">this</span>._runChild( path )
+
+    <span class="pl-en">_runChild</span><span class="pl-k">:</span><span class="pl-smi"> <span class="pl-smi">( path )</span></span> <span class="pl-k"><span class="pl-k">=&gt;</span></span>
+        childProcess.exec <span class="pl-s"><span class="pl-pds">'</span>some command<span class="pl-pds">'</span></span>, { <span class="pl-v"><span class="pl-v">cwd:</span></span> path }, <span class="pl-smi">(err, output, error)</span> <span class="pl-k">=&gt;</span>
+            <span class="pl-smi">@callback</span>( output )
+
+<span class="pl-v"><span class="pl-v">exports.Cascade <span class="pl-k">=</span></span></span> Cascade</pre></div>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/haarcuba/aroma-mock">Aroma Mock</a> is maintained by <a href="https://github.com/haarcuba">haarcuba</a>.</span>
