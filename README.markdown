@@ -55,7 +55,7 @@ Since we don't care about the return value from this call, we leave it unspecifi
 
 	call( 'element.val', [ '123' ], null )
 
-Since jQuery expectations are commonplace, we can use a the shorthand
+Since jQuery expectations are commonplace, we can use the shorthand
 `expect_$` for this 2-call expectation - this is demonstrated below.
 	
 Another thing to note is the use of `capture` and `captured` to test functions
@@ -203,4 +203,86 @@ class Example
 					type: 'POST',
 					success: success,
 					error: error }
+```
+
+## The Callback Cascade Pattern
+
+When writing JavaScript code, it often happens that we get a cascade of
+callback functions, since almost everything is done asynchronously.  For
+example, say we want to check if some directory exists, and if not, create it,
+and then run some subprocess in the directory. If the directory already exists,
+we don't need to create it.
+
+The callback cascade here is
+
+    fs.exists => fs.mkdir => childProcess.exec
+
+We can use `capture` for this, but it gets ugly really fast. If the callback
+argument for each function in our cascade is the *last* one, which is often the
+case, e.g.
+
+    fs.exists(path, callback)
+
+We can use the *cascade* pattern:
+
+```coffeescript
+rewire = require 'rewire'
+
+describe 'cascade of callbacks', ->
+    beforeEach ->
+        cascadeModule.__set__( 'fs', fakeObject( 'fs', [ 'exists', 'mkdir' ] ) )
+        cascadeModule.__set__( 'childProcess', fakeObject( 'childProcess', [ 'exec' ] ) )
+
+    it 'should work', ->
+        myCallback = fakeObject( 'myCallback' )
+        scenario.expectCascade [    cascade( 'fs.exists', [ 'some_path' ], null, [false] ),
+                                    cascade( 'fs.mkdir', [ 'some_path' ] ),
+                                    cascade( 'childProcess.exec', [ 'some command', {cwd: 'some_path'} ], null, [ null, "output string", "error string" ] ),
+                                    call( 'myCallback', [ "output string" ] ) ]
+
+        tested = new cascadeModule.Cascade()
+
+        tested.go( 'some_path', myCallback )
+        scenario.end()
+        
+```
+
+NOTE the use of [*rewire*](https://github.com/jhnns/rewire) to mock objects inside the module.
+
+This expresses the expectation that the code will call `fs.exists` - passing it
+`some_path`. The `fs.exists` cascade specifies that `fs.exists` will return
+`null`, *and then* call its callback with the arguments specified in a list, in
+this case `[false]`, so just one argument.
+
+What happens when `fs.exists`'s callback is called? Since the directory does
+not exist (we made `fs.exists` pass `false` to its callback, remember?) we
+expect it to call `fs.mkdir`, which will the call *its* callback.
+
+We then demand that this callback call `childProcess.exec` and we specify the
+output and error strings passed to *its* callback, which should, finally, call
+the user's callback.
+
+NOTE the last call in the cascade is a `call`, not a `cascade` - since we don't
+want it to automatically call a callback.
+
+The code that passes this test would be:
+```coffeescript
+fs = require 'fs'
+childProcess = require 'child_process'
+
+class Cascade
+    go: ( path, callback ) =>
+        @callback = callback
+        fs.exists path, (exists) =>
+            if exists
+                this._runChild( path )
+            else
+                fs.mkdir path, =>
+                    this._runChild( path )
+
+    _runChild: ( path ) =>
+        childProcess.exec 'some command', { cwd: path }, (err, output, error) =>
+            @callback( output )
+
+exports.Cascade = Cascade
 ```

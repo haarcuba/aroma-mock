@@ -1,6 +1,6 @@
 {
   "name": "aroma-mock",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "CoffeeScript automatic Mock objects with Scenarios: test *exactly* what you want",
   "author": {
     "name": "Yoav Kleinberger",
@@ -22,6 +22,7 @@
   "main": "./suite/globals",
   "devDependencies": {
     "mocha": "*",
+    "rewire": "^2.3.1",
     "should": "*"
   },
   "files": [

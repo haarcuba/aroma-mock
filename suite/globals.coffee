@@ -18,6 +18,7 @@ global.fakeGlobal = ( name, methods ) ->
 	global[ name ] = fakeobject.fakeObject( name, methods )
 
 global.call = ( path, argumentexpectations, result ) -> new expectation.Call( path, argumentexpectations, result )
+global.cascade = ( path, argumentexpectations, result, passAlong ) -> new expectation.Cascade( path, argumentexpectations, result, passAlong )
 global.window = global
 global.THIS = { fakeThisObject: "#{Math.random().toString()[ 2..5 ]}_this",\
 				toString: => "this" }
